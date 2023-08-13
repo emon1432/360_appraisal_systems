@@ -42,15 +42,14 @@
                                             class="rounded-circle" width="60px" height="60px">
                                     @endif
                                 </td>
-                                <td>{{ $admin->first_name . ' ' . $admin->last_name }}</td>
+                                <td>{{ $admin->name }}</td>
                                 <td>{{ $admin->email }}</td>
                                 <td>{{ $admin->phone }}</td>
                                 <td>{{ $admin->address }}</td>
                                 <td>
-                                    <a href="{{ route('admin-management.show', $admin->id) }}" class="btn btn-info btn-sm">
+                                    <a href="{{ route('admin.show', $admin->id) }}" class="btn btn-info btn-sm">
                                         <i class="bx bx-user"></i>
                                     </a>
-
                                     <a class="btn btn-warning btn-sm" data-bs-toggle="modal"
                                         data-bs-target="#adminEditModal{{ $admin->id }}">
                                         <i class="bx bx-edit"></i>
@@ -59,13 +58,11 @@
                                         class="btn btn-danger btn-sm {{ $admin->id == auth()->user()->id ? 'disabled' : '' }}">
                                         <i class="bx bx-trash"></i>
                                     </button>
-                                    <form id="delete-form-{{ $admin->id }}"
-                                        action="{{ url('admin-management/' . $admin->id) }}" method="post"
-                                        class="d-inline-block">
+                                    <form id="delete-form-{{ $admin->id }}" action="{{ url('admin/' . $admin->id) }}"
+                                        method="post" class="d-inline-block">
                                         @csrf
                                         @method('delete')
                                     </form>
-
                                     {{-- Edit Admin Modal --}}
                                     <div class="modal fade" id="adminEditModal{{ $admin->id }}" tabindex="-1"
                                         style="display: none;" aria-hidden="true">
@@ -77,30 +74,32 @@
                                                         aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body text-start">
-                                                    <form class="row g-3"
-                                                        action="{{ route('admin-management.update', $admin->id) }}"
+                                                    <form class="row g-3" action="{{ route('admin.update', $admin->id) }}"
                                                         method="POST" enctype="multipart/form-data">
                                                         @csrf
                                                         @method('PUT')
                                                         <div class="col-md-6">
-                                                            <label for="input25" class="form-label">First Name</label>
+                                                            <label for="input25" class="form-label">Name</label>
                                                             <div class="input-group">
                                                                 <span class="input-group-text"><i
                                                                         class="bx bx-user"></i></span>
                                                                 <input type="text" class="form-control"
-                                                                    placeholder="First Name" name="first_name" required
-                                                                    value="{{ $admin->first_name }}">
+                                                                    placeholder="Name" name="name"
+                                                                    value="{{ $admin->name }}" required>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
-                                                            <label for="last_name" class="form-label">Last Name</label>
-                                                            <div class="input-group">
-                                                                <span class="input-group-text"><i
-                                                                        class="bx bx-user"></i></span>
-                                                                <input type="text" class="form-control"
-                                                                    placeholder="Last Name" name="last_name" required
-                                                                    value="{{ $admin->last_name }}">
-                                                            </div>
+                                                            <label for="name" class="form-label">Role</label>
+                                                            <select name="role_id" class="form-select">
+                                                                <option value="" disabled selected>Select Role
+                                                                </option>
+                                                                @foreach ($roles as $role)
+                                                                    <option
+                                                                        value="{{ $role->id }}"{{ $role->id == $admin->role_id ? 'selected' : '' }}>
+                                                                        {{ $role->name }}
+                                                                    </option>
+                                                                @endforeach
+                                                            </select>
                                                         </div>
                                                         <div class="col-md-6">
                                                             <label for="email" class="form-label">Email</label>
@@ -123,48 +122,21 @@
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
-                                                            <label for="dob" class="form-label">Date of Birth</label>
-                                                            <div class="input-group">
-                                                                <span class="input-group-text"><i
-                                                                        class="bx bx-calendar"></i></span>
-                                                                <input type="date" class="form-control"
-                                                                    placeholder="Date of Birth" name="dob"
-                                                                    value="{{ $admin->dob }}">
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-6">
                                                             <label for="address" class="form-label">Address</label>
                                                             <div class="input-group">
                                                                 <span class="input-group-text"><i
                                                                         class="bx bx-map"></i></span>
                                                                 <input type="text" class="form-control"
-                                                                    placeholder="Address" name="address"
-                                                                    value="{{ $admin->address }}">
+                                                                    placeholder="Address" name="address">
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
-                                                            <label for="image" class="form-label">New Image</label>
+                                                            <label for="image" class="form-label">Image</label>
                                                             <div class="input-group">
                                                                 <span class="input-group-text"><i
                                                                         class="bx bx-image"></i></span>
                                                                 <input type="file" class="form-control"
-                                                                    placeholder="Image" name="image">
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <label for="old_image" class="form-label">Old Image</label>
-                                                            <div class="input-group">
-                                                                @if ($admin->image != null && file_exists(public_path() . '/uploads/' . $admin->image))
-                                                                    <img src="{{ asset('uploads') }}/{{ $admin->image ?? 'default.png' }}"
-                                                                        alt="user image" class="rounded-circle"
-                                                                        width="60px" height="60px">
-                                                                @else
-                                                                    <img src="{{ asset('uploads/default.png') }}"
-                                                                        alt="user image" class="rounded-circle"
-                                                                        width="60px" height="60px">
-                                                                @endif
-                                                                <input type="hidden" name="old_image"
-                                                                    value="{{ $admin->image }}">
+                                                                    name="image">
                                                             </div>
                                                         </div>
                                                         <div class="modal-footer">
@@ -178,14 +150,12 @@
                                         </div>
                                     </div>
                                 </td>
-
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
             </div>
         </div>
-
         {{-- Add New Admin Modal --}}
         <div class="modal fade" id="adminAddModal" tabindex="-1" style="display: none;" aria-hidden="true">
             <div class="modal-dialog modal-xl">
@@ -195,24 +165,25 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form class="row g-3" action="{{ route('admin-management.store') }}" method="POST"
+                        <form class="row g-3" action="{{ route('admin.store') }}" method="POST"
                             enctype="multipart/form-data">
                             @csrf
                             <div class="col-md-6">
-                                <label for="input25" class="form-label">First Name</label>
+                                <label for="input25" class="form-label">Name</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bx bx-user"></i></span>
-                                    <input type="text" class="form-control" placeholder="First Name"
-                                        name="first_name" required>
+                                    <input type="text" class="form-control" placeholder="Name" name="name"
+                                        required>
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <label for="last_name" class="form-label">Last Name</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="bx bx-user"></i></span>
-                                    <input type="text" class="form-control" placeholder="Last Name" name="last_name"
-                                        required>
-                                </div>
+                                <label for="name" class="form-label">Role</label>
+                                <select name="role_id" class="form-select">
+                                    <option value="" disabled selected>Select Role</option>
+                                    @foreach ($roles as $role)
+                                        <option value="{{ $role->id }}">{{ $role->name }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                             <div class="col-md-6">
                                 <label for="email" class="form-label">Email</label>
@@ -234,14 +205,6 @@
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bx bx-lock-alt"></i></span>
                                     <input type="password" class="form-control" name="password" placeholder="Password">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="dob" class="form-label">Date of Birth</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="bx bx-calendar"></i></span>
-                                    <input type="date" class="form-control" placeholder="Date of Birth"
-                                        name="dob">
                                 </div>
                             </div>
                             <div class="col-md-6">

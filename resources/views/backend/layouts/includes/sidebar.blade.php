@@ -20,6 +20,22 @@
                 <div class="menu-title">Dashboard</div>
             </a>
         </li>
+        <li>
+            <a href="{{ route('admin.index') }}">
+                <div class="parent-icon">
+                    <i class='bx bx-user'></i>
+                </div>
+                <div class="menu-title">Admins</div>
+            </a>
+        </li>
+        <li>
+            <a href="{{ route('role.index') }}">
+                <div class="parent-icon">
+                    <i class='bx bx-user'></i>
+                </div>
+                <div class="menu-title">Roles</div>
+            </a>
+        </li>
     </ul>
     <!--end navigation-->
 </div>
