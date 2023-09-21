@@ -1,4 +1,6 @@
 @extends('backend.layouts.master')
+@push('css')
+@endpush
 @section('content')
     <div class="card">
         <div class="card-header bg-dark">
@@ -232,3 +234,5 @@
         </div>
     </div>
 @endsection
+@push('js')
+@endpush
