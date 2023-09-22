@@ -39,8 +39,7 @@
     <link rel="stylesheet" href="{{ asset('assets') }}/css/semi-dark.css" />
     <link rel="stylesheet" href="{{ asset('assets') }}/css/header-colors.css" />
     <link href="{{ asset('css/iziToast.css') }}" rel="stylesheet">
-
-
+    @stack('css')
     <title>360 Appraisal System</title>
 </head>
 
